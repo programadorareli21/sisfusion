@@ -152,9 +152,9 @@
 													<table id="seeCoSellingAdvisers" class="table table-bordered table-hover" style="width:100%">
 														<thead>
 															<tr>
+                                                                <th>GERENTE</th>
+                                                                <th>COORDINADOR</th>
 																<th>ASESOR</th>
-																<th>COORDINADOR</th>
-																<th>GERENTE</th>
 																<th>FECHA ALTA</th>
 																<th>USUARIO</th>
 															</tr>
@@ -163,9 +163,9 @@
 														</tbody>
 														<tfoot>
 															<tr>
+                                                                <th>GERENTE</th>
+                                                                <th>COORDINADOR</th>
 																<th>ASESOR</th>
-																<th>COORDINADOR</th>
-																<th>GERENTE</th>
 																<th>FECHA ALTA</th>
 																<th>USUARIO</th>
 															</tr>
@@ -686,7 +686,16 @@
 						{
 							gerente = myFunctions.validateEmptyField(d.gerente);
 						}
-						return gerente;
+
+                        if (!d.nombreGerente) {
+                            return (gerente.length > 2) ? `T: ${gerente}` : gerente;
+                        }
+
+                        const gerentesStr = d.nombreGerente.split('<br>');
+                        const gerentes = gerentesStr.filter((item, index) => {
+                            return gerentesStr.indexOf(item) === index;
+                        });
+						return `T: ${gerente} <br> ${gerentes.toString().replaceAll(',', '<br>')}`;
 					}
 				},
 				{
@@ -706,7 +715,16 @@
 						}
 
 						coordinador = coordinador = '' ? 'Sin registro' : coordinador;
-						return coordinador;
+
+                        if (!d.nombreCoordinador) {
+                            return (coordinador.length > 2) ? `T: ${coordinador}` : coordinador;
+                        }
+
+                        const coordinadorStr = d.nombreCoordinador.split('<br>');
+                        const coordinadores = coordinadorStr.filter((item, index) => {
+                            return coordinadorStr.indexOf(item) === index;
+                        });
+                        return `T: ${coordinador} <br> ${coordinadores.toString().replaceAll(',', '<br>')}`;
 					}
 				},
 				{
@@ -720,7 +738,16 @@
 						{
 							asesor = myFunctions.validateEmptyField(d.asesor);
 						}
-						return asesor;
+
+                        if (!d.nombreAsesor) {
+                            return (asesor.length > 2) ? `T: ${asesor}` : asesor;
+                        }
+
+                        const asesorStr = d.nombreAsesor.split('<br>');
+                        const asesores = asesorStr.filter((item, index) => {
+                            return asesorStr.indexOf(item) === index;
+                        });
+                        return `T: ${asesor} <br> ${asesores.toString().replaceAll(',', '<br>')}`;
 					}
 				},
 				{
@@ -989,9 +1016,9 @@
 				"destroy": true,
 				"ordering": false,
 				columns: [
+                    { "data": "gerente" },
+                    { "data": "coordinador" },
 					{ "data": "asesor" },
-					{ "data": "coordinador" },
-					{ "data": "gerente" },
 					{ "data" : "fecha_creacion"},
 					{ "data": "creado_por" }
 

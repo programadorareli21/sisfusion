@@ -71,7 +71,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(coordinador2.nombre,' ', coordinador2.apellido_paterno, ' ', coordinador2.apellido_materno) as gerente2,
                                 lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente, lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+
                                 FROM lotes lot
                                 INNER JOIN condominios con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN residenciales res ON res.idResidencial = con.idResidencial 
@@ -85,6 +88,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+                                
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                
                                 WHERE lot.status = 1 and lot.idCondominio = ".$condominio." AND lot.idStatusLote = ".$estatus." ORDER BY lot.idLote");
      }
 
@@ -106,7 +120,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(coordinador2.nombre,' ', coordinador2.apellido_paterno, ' ', coordinador2.apellido_materno) as coordinador2,
                                 CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                
                                 FROM [lotes] lot 
                                 INNER JOIN [condominios] con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN [residenciales] res ON res.idResidencial = con.idResidencial 
@@ -120,6 +137,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+
                                 WHERE lot.status = 1 and lot.idStatusLote = 100 ORDER BY lot.idLote");
      }
 
@@ -144,7 +172,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                 lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                
                                 FROM [lotes] lot
                                 INNER JOIN [condominios] con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN [residenciales] res ON res.idResidencial = con.idResidencial 
@@ -158,6 +189,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+                                                             
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                                             
                                 WHERE lot.status = 1 and lot.idStatusLote = ".$estatus." ORDER BY lot.idLote");
             } else {
               return $this->db->query("SELECT  lot.idLote, lot.nombreLote, con.nombre as nombreCondominio, res.nombreResidencial, lot.idStatusLote, con.idCondominio, lot.sup as superficie, lot.total, 
@@ -170,7 +212,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                 lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                
                                 FROM [lotes] lot
                                 INNER JOIN [condominios] con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN [residenciales] res ON res.idResidencial = con.idResidencial 
@@ -184,6 +229,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+                                                             
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                                             
                                 WHERE lot.status = 1 and res.idResidencial = ".$proyecto." AND lot.idStatusLote = ".$estatus." ORDER BY con.nombre, lot.idLote");
             }
      }
@@ -206,7 +262,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(coordinador2.nombre,' ', coordinador2.apellido_paterno, ' ', coordinador2.apellido_materno) as coordinador2,
                                 CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol, lot.precio, lot.fecha_modst, cl.fechaApartado,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                
                                 FROM [lotes] lot 
                                 INNER JOIN [condominios] con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN [residenciales] res ON res.idResidencial = con.idResidencial 
@@ -220,6 +279,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente                                                             
+
                                 WHERE lot.status = 1 and lot.idStatusLote = ".$estatus." ORDER BY lot.idLote");
      }
 
@@ -244,7 +314,10 @@ class Contratacion_model extends CI_Model {
                                   CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                   lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                   CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                  ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                  ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                  
+                                  vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                  
                                   FROM lotes lot 
                                   INNER JOIN condominios con ON con.idCondominio = lot.idCondominio 
                                   INNER JOIN residenciales res ON res.idResidencial = con.idResidencial 
@@ -257,7 +330,18 @@ class Contratacion_model extends CI_Model {
                                   LEFT JOIN usuarios asesor2 ON lot.idAsesor = asesor2.id_usuario
                                   LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                   LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
-                                  LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9          
+                                  LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+
+                                  LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                  
                                   WHERE lot.status = 1  ORDER BY con.nombre, lot.idLote");
             } else {
               return $this->db->query("SELECT lot.idLote, lot.nombreLote, con.nombre as nombreCondominio, 
@@ -272,7 +356,10 @@ class Contratacion_model extends CI_Model {
                                   CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                   lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                   CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                  ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                  ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                  
+                                  vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                  
                                   FROM lotes lot 
                                   INNER JOIN condominios con ON con.idCondominio = lot.idCondominio 
                                   INNER JOIN residenciales res ON res.idResidencial = con.idResidencial 
@@ -285,7 +372,18 @@ class Contratacion_model extends CI_Model {
                                   LEFT JOIN usuarios asesor2 ON lot.idAsesor = asesor2.id_usuario
                                   LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                   LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario      
-                                  LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9    
+                                  LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+                                  
+                                  LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                  
                                   WHERE lot.status = 1 and res.idResidencial =".$proyecto." ORDER BY res.nombreResidencial, con.nombre, lot.idLote");
             }
           }
@@ -308,7 +406,10 @@ class Contratacion_model extends CI_Model {
                                 CONCAT(gerente2.nombre,' ', gerente2.apellido_paterno, ' ', gerente2.apellido_materno) as gerente2, asesor2.id_rol,
                                 lot.precio, lot.fecha_modst, cl.fechaApartado, lot.observacionContratoUrgente,
                                 CONCAT(cl.nombre,' ', cl.apellido_paterno, ' ', cl.apellido_materno) as nombreCliente,lot.motivo_change_status,
-                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion
+                                ISNULL(oxc.nombre, 'Sin especificar') lugar_prospeccion, lot.fecha_creacion,
+                                
+                                vcn.nombreGerente, vcn.nombreCoordinador, vcn.nombreAsesor
+                                
                                 FROM lotes lot INNER JOIN condominios con ON con.idCondominio = lot.idCondominio 
                                 INNER JOIN residenciales res ON res.idResidencial = con.idResidencial 
                                 INNER JOIN statuslote sl ON sl.idStatusLote = lot.idStatusLote 
@@ -321,6 +422,17 @@ class Contratacion_model extends CI_Model {
                                 LEFT JOIN usuarios coordinador2 ON asesor2.id_lider = coordinador2.id_usuario
                                 LEFT JOIN usuarios gerente2 ON coordinador2.id_lider = gerente2.id_usuario
                                 LEFT JOIN opcs_x_cats oxc ON oxc.id_opcion = cl.lugar_prospeccion AND oxc.id_catalogo = 9
+                                
+                                LEFT JOIN (SELECT vc.id_cliente,
+                                    STRING_AGG(CONCAT('C: ', ug.nombre, ' ', ug.apellido_paterno, ' ', ug.apellido_materno), '<br>') AS nombreGerente,
+                                    STRING_AGG(CONCAT('C: ', uc.nombre, ' ', uc.apellido_paterno, ' ', uc.apellido_materno), '<br>') AS nombreCoordinador,
+                                    STRING_AGG(CONCAT('C: ', ua.nombre, ' ', ua.apellido_paterno, ' ', ua.apellido_materno), '<br>') AS nombreAsesor
+                                    FROM ventas_compartidas vc 
+                                    INNER JOIN usuarios ug ON ug.id_usuario = vc.id_gerente
+                                    INNER JOIN usuarios uc ON uc.id_usuario = vc.id_coordinador
+                                    INNER JOIN usuarios ua ON ua.id_usuario = vc.id_asesor
+                                    GROUP BY vc.id_cliente) vcn ON vcn.id_cliente = lot.idCliente
+                                
                                 WHERE lot.status = 1 and res.idResidencial = ".$proyecto." AND lot.idCondominio = ".$condominio." ORDER BY lot.idLote");
      }
 
