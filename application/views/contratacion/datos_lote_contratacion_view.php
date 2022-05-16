@@ -380,7 +380,7 @@
 		let titulos = [];
 
 		$(document).on('change','#proyecto, #condominio, #estatus', function() {
-			ix_proyecto = $("#proyecto").val();
+			ix_proyecto = $("#proyecto").val() || null;
 			ix_condominio = $("#condominio").val();
 			ix_estatus = $("#estatus").val();
 
