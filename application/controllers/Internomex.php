@@ -134,7 +134,7 @@
 
           $insertAuditoriaData = array("fecha_creacion" => date("Y-m-d H:i:s"), "creado_por" => $this->session->userdata('id_usuario'));
           echo json_encode($decodedData1);         
-          echo json_encode ($montoFianl);  
+        
           $flag = 0 ;
           $bande = true;
           for ($i = 0; $i < count($decodedData1) ; $i++) { 
@@ -142,18 +142,18 @@
             if($flag == 0){
               $idUser = substr($decodedData1[$i],5, 1);
               (isset($decodedData1[$i]) && !empty($decodedData1[$i]) ) ? array ("id_usuario" => $idUser)
-              
+               
               //$commonData += (isset(id) && !empty($decodedData[$i]->nombreUsuario)) ? array("nombreUsuario" => $decodedData[$i]->nombreUsuario) : array("nombreUsuario" => NULL);
               $bande = true;
             }else if($flag == 1){
               $nombreUsuario      = substr($decodedData1[$i], 17 , -1);    
-            }else if($flag == 2){
+            }else if($flag == 2){ 
               $tipoUsuario        = substr($decodedData1[$i], 15, -1);     
             }else if($flag == 3){
               $sede               = substr($decodedData1[$i], 8, -1);     
             }else if($flag == 4){
               $formaPago          = substr($decodedData1[$i], 13, -1);    
-            }else if($flag == 5){
+            }else if($flag == 5){ 
               $rfc                = substr($decodedData1[$i], 7, -1);    
             }else if($flag == 6){
               $nacionalidad       = substr($decodedData1[$i], 16, -1);    
@@ -162,9 +162,9 @@
             }else if($flag == 8){
               $montoConDescuento  = substr($decodedData1[$i], 25, -1);    
             }else if($flag == 9){
-              $montoFianl         = substr($decodedData1[$i], 13, -1);
-              $flag = 0;
-              $bande = false ;
+              $montoFinal         = substr($decodedData1[$i], 13, -1);
+              $flag   = 0 ;
+              $bande  = false;
             }
 
             if ($bande){ $flag ++;}
